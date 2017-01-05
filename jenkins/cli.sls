@@ -44,6 +44,7 @@ jenkins_cli_jar:
 jenkins_responding:
   cmd.wait:
     - name: "until {{ jenkins_cli('who-am-i') }}; do sleep 1; done"
+    - user: {{ jenkins.user }}
     - timeout: {{ timeout }}
     - watch:
       - cmd: jenkins_cli_jar
@@ -51,11 +52,13 @@ jenkins_responding:
 restart_jenkins:
   cmd.wait:
     - name: {{ jenkins_cli('safe-restart') }}
+    - user: {{ jenkins.user }}
     - require:
       - cmd: jenkins_responding
 
 reload_jenkins_config:
   cmd.wait:
     - name: {{ jenkins_cli('reload-configuration') }}
+    - user: {{ jenkins.user }}
     - require:
       - cmd: jenkins_responding
